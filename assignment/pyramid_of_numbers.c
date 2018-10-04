@@ -13,6 +13,7 @@
  * ----------------------------------------------------------
  */
 #include <stdio.h>
+#include <string.h>
 
 /// The maximum number of digits allowed in a big int.
 #define MAX_DIGITS 80
@@ -76,5 +77,19 @@ void copy_big_int(const struct BigInt *from, struct BigInt *to);
 */
 int main(int argc, char *argv[])
 {
+	char str[MAX_DIGITS];
+
+	printf(("Pyramid of Numbers\n");
+	printf("==========================\n\n");
+	printf("Please enter a number: \n");
+	scanf("%s",str );
+	struct BigInt n;
+	n.digits_count=0;
+	strtobig_int(str, int len,n);
 	return 0;
+}
+
+int strtobig_int(const char *str, int len, struct BigInt *big_int)
+{
+
 }
