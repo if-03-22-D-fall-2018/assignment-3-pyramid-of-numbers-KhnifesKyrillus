@@ -3,7 +3,7 @@
  * ---------------------------------------------------------
  * Exercise Number: 0
  * Title:			Pyramid of Numbers
- * Author:			<your name>
+ * Author:			Khnifes Kyrillus
  * ----------------------------------------------------------
  * Description:
  * Calculates a pyramid of numbers, i.e., it multiplies a big
