@@ -85,6 +85,7 @@ int main(int argc, char *argv[])
 	scanf("%s",string );
 	struct BigInt big_int;
 	int len=strlen(string);
+	big_int.digits_count=len;
 	len=strtobig_int(string,len , &big_int);
 	return 0;
 }
@@ -92,22 +93,42 @@ int main(int argc, char *argv[])
 int strtobig_int(const char *str, int len, struct BigInt *big_int)
 {
 	int counter=0;
+	int j=len;
 	for (size_t i = 0; i < len; i++)
 	{
 		if (str[i]>='0' && str[i]<='9')
 		{
-			int tmp=str[i]-'0';
-			big_int->the_int[i]=tmp;
-			printf("%d\n",big_int->the_int[i] );
+			big_int->the_int[j]=str[i]-'0';
 			counter++;
 		}
+		j--;
 	}
 	return counter;
 }
-/*void print_big_int(const struct BigInt *big_int)
-{
-	for (size_t i = 0; i < count; i++)
-	{
 
+void multiply(const struct BigInt *big_int, int factor, struct BigInt *big_result)
+{
+	int tmp;
+	for (size_t i = 1; i < 10; i++)
+	{
+		tmp=0;
+		for (size_t j = 0; j < big_int->digits_count; j++)
+		{
+			tmp=big_int->the_int[j]*i;
+			if (big_int->the_int[i-1]*i>=10)
+			{
+				tmp+=1;
+			}
+			if (tmp>=10)
+			{
+				big_result->the_int[i]=tmp%10;
+			}
+			else
+			{
+				big_result->the_int[i]=tmp;
+			}
+			printf("%d",big_int[i]);
+		}
 	}
-}*/
+
+}
