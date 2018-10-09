@@ -12,123 +12,168 @@
  * again starting by 2, 3, etc.
  * ----------------------------------------------------------
  */
-#include <stdio.h>
-#include <string.h>
+ #include <stdio.h>
+ #include <string.h>
+ #include <stdbool.h>
+ #include <math.h>
 
-/// The maximum number of digits allowed in a big int.
-#define MAX_DIGITS 80
+ /// The maximum number of digits allowed in a big int.
+ #define MAX_DIGITS 80
 
-/** BigInt represents an integer number which can have MAX_DIGITS digits
-*** @see MAX_DIGITS
-*/
-struct BigInt {
-	/** number of digits of the big int. */
-	int digits_count;
+ /** BigInt represents an integer number which can have MAX_DIGITS digits
+ *** @see MAX_DIGITS
+ */
+ struct BigInt {
+ 	/** number of digits of the big int. */
+ 	int digits_count;
 
-	/** array of digits of big int. */
-	unsigned int the_int[MAX_DIGITS];
-};
+ 	/** array of digits of big int. */
+ 	unsigned int the_int[MAX_DIGITS];
+ };
 
-/** strtobig_int converts a string into a BigInt. If strtobig_int runs
-*** against a character not between '0' and '9' the conversion stops
-*** at this point.
-*** @param *str The string to be converted.
-*** @param len Number of characters in string to be converted.
-*** @param *big_int The converted string now as BigInt.
-* @return The number of characters converted.
-*/
-int strtobig_int(const char *str, int len, struct BigInt *big_int);
+ /** strtobig_int converts a string into a BigInt. If strtobig_int runs
+ *** against a character not between '0' and '9' the conversion stops
+ *** at this point.
+ *** @param *str The string to be converted.
+ *** @param len Number of characters in string to be converted.
+ *** @param *big_int The converted string now as BigInt.
+ * @return The number of characters converted.
+ */
+ int strtobig_int(const char *str, int len, struct BigInt *big_int);
 
-/** print_big_int() prints a BigInt.
-*** @param *big_int The BigInt to be printed.
-*/
-void print_big_int(const struct BigInt *big_int);
+ void print_big_int(const struct BigInt *big_int);
 
-/** multiply() multiplies a BigInt by an int.
-*** @param big_int The BigInt to be multiplied.
-*** @param factor The int value which is multiplied by BigInt.
-*** @param *big_result The result of the multiplication.
-*/
-void multiply(const struct BigInt *big_int, int factor, struct BigInt *big_result);
+ /** multiply() multiplies a BigInt by an int.
+ *** @param big_int The BigInt to be multiplied.
+ *** @param factor The int value which is multiplied by BigInt.
+ *** @param *big_result The result of the multiplication.
+ */
+ void multiply(const struct BigInt *big_int, int factor, struct BigInt *big_result);
 
-/** divide() multiplies a BigInt by an int.
-*** @param big_int The BigInt to be divided.
-*** @param divisor The int value by which we want to devide big_int.
-*** @param *big_result The result of the division.
-*/
-void divide(const struct BigInt *big_int, int divisor, struct BigInt *big_result);
+ /** divide() multiplies a BigInt by an int.
+ *** @param big_int The BigInt to be divided.
+ *** @param divisor The int value by which we want to devide big_int.
+ *** @param *big_result The result of the division.
+ */
+ void divide(const struct BigInt *big_int, int divisor, struct BigInt *big_result);
 
-/** copy_big_int() copies a BigInt to another BigInt.
-*** @param from The source where we want to copy from.
-*** @param *to The target where we want to copy to.
-*/
-void copy_big_int(const struct BigInt *from, struct BigInt *to);
+ /** copy_big_int() copies a BigInt to another BigInt.
+ *** @param from The source where we want to copy from.
+ *** @param *to The target where we want to copy to.
+ */
+ void copy_big_int(const struct BigInt *from, struct BigInt *to);
 
-/**
-*** main() reads the base number from which the pyramid has to be calculated
-*** into an array of char. The max. length of this number is MAX_DIGITS.
-*** The number is checked to contain only digits. If not the program exits.
-*** Then the inputted number is converted into a big int by calling the
-*** function strtobig_int().
-*** After the conversion the tower is calculated by calling the functions
-*** multiply(), print_big_int(), and copy_big_int() consecutively from 2 to
-*** 9 and then again with divide() instead of multiply() from 2 to 9.
-***
-*/
-int main(int argc, char *argv[])
-{
-	char string[MAX_DIGITS];
+ /**
+ *** main() reads the base number from which the pyramid has to be calculated
+ *** into an array of char. The max. length of this number is MAX_DIGITS.
+ *** The number is checked to contain only digits. If not the program exits.
+ *** Then the inputted number is converted into a big int by calling the
+ *** function strtobig_int().
+ *** After the conversion the tower is calculated by calling the functions
+ *** multiply(), print_big_int(), and copy_big_int() consecutively from 2 to
+ *** 9 and then again with divide() instead of multiply() from 2 to 9.
+ ***
+ */
+ int main(int argc, char *argv[])
+ {
+ 	struct BigInt firstNumber;
+ 	struct BigInt result;
+ 	char userInput[80];
+ 	printf("Pyramid of numbers\n\n");
+ 	printf("Please enter a number: " );
+ 	scanf("%s",userInput );
+ 	int len=strlen(userInput);
+ 	len=strtobig_int(userInput, len, &firstNumber);
+ 	firstNumber.digits_count=len;
+ 	print_big_int(&firstNumber);
+ 	printf("\n%d\n",len);
+ 	multiply(&firstNumber, 5, &result);
+ 	printf("\n\n");
 
-	printf("Pyramid of Numbers\n");
-	printf("==========================\n\n");
-	printf("Please enter a number: \n");
-	scanf("%s",string );
-	struct BigInt big_int;
-	int len=strlen(string);
-	big_int.digits_count=len;
-	len=strtobig_int(string,len , &big_int);
-	return 0;
-}
+ 	print_big_int(&result);
+ 	divide(&firstNumber, 5, &result);
+ 	print_big_int(&result);
+ 	printf("\n");
+ 	print_big_int(&firstNumber);
+ 	print_big_int(&result);
+ 	printf("\n\n");
+ 	copy_big_int(&firstNumber, &result);
+ 	print_big_int(&firstNumber);
+ 	print_big_int(&result);
+ 	printf("end");
+ 	return 0;
+ }
 
-int strtobig_int(const char *str, int len, struct BigInt *big_int)
-{
-	int counter=0;
-	int j=len;
-	for (size_t i = 0; i < len; i++)
-	{
-		if (str[i]>='0' && str[i]<='9')
+ int strtobig_int(const char *str, int len, struct BigInt *big_int)
+ {
+ 	int counter=0;
+	int y=MAX_DIGITS;
+ 	for (size_t i = len-1 ; i >=0; i--)
+	 {
+ 		if(str[i]>='0'&&str[i]<='9')
 		{
-			big_int->the_int[j]=str[i]-'0';
-			counter++;
-		}
-		j--;
-	}
-	return counter;
-}
+ 			int temp=str[i]-'0';
+ 			big_int->the_int[y] = temp;
+ 			counter++;
+			y--;
+ 		}
+ 	}
+     return counter;
+ }
 
-void multiply(const struct BigInt *big_int, int factor, struct BigInt *big_result)
-{
-	int tmp;
-	for (size_t i = 1; i < 10; i++)
-	{
-		tmp=0;
-		for (size_t j = 0; j < big_int->digits_count; j++)
+ void print_big_int(const struct BigInt *big_int){
+ for (int i=0; i < big_int->digits_count; i++) {
+ 	printf("%d",big_int->the_int[i] );
+ }
+ printf("\n");
+ }
+
+ void multiply(const struct BigInt *big_int, int factor, struct BigInt *big_result)
+ {
+	 char overflow[MAX_DIGITS];
+	 for (size_t i = 1; i < 10; i++)
+	 {
+	 	for (size_t j = big_int->digits_count-1 ; j >=0; j--)
 		{
-			tmp=big_int->the_int[j]*i;
-			if (big_int->the_int[i-1]*i>=10)
+			int digit=big_int->the_int[j]*1;
+			if (digit<=10)
 			{
-				tmp+=1;
+				overflow[j-1]=digit/10+'0';
+				big_result->the_int[j]=digit%10;
 			}
-			if (tmp>=10)
+	 	}
+		for (size_t i = 0; i < MAX_DIGITS; i++)
+		{
+			if (overflow[i]<='9'&&overflow[i]>='0')
 			{
-				big_result->the_int[i]=tmp%10;
+				big_result->the_int[i]+=overflow[i]-'0';
 			}
-			else
-			{
-				big_result->the_int[i]=tmp;
-			}
-			printf("%d",big_int[i]);
 		}
-	}
+	 }
+ }
 
-}
+ void divide(const struct BigInt *big_int, int divisor, struct BigInt *big_result){
+     int overflowNumber=0;
+     int temp;
+     int counter=0;
+     bool alreadyNumberSetted=false;
+     for(int i=0;i<big_int->digits_count;i++){
+         temp=(big_int->the_int[i]+overflowNumber)/divisor;
+         if(temp==0&&alreadyNumberSetted){
+
+             big_result->the_int[counter]=(big_int->the_int[i]+overflowNumber)/divisor;
+             counter++;
+         }else if(temp!=0){
+          alreadyNumberSetted=true;
+          big_result->the_int[counter]=(big_int->the_int[i]+overflowNumber)/divisor;
+          counter++;
+         }
+         overflowNumber=big_int->the_int[i]%divisor;
+         overflowNumber*=10;
+     }
+     big_result->digits_count=counter;
+ }
+
+ void copy_big_int(const struct BigInt *from, struct BigInt *to){
+     *to=*from;
+ }
