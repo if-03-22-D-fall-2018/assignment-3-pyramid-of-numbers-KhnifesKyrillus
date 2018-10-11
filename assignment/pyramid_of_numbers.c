@@ -84,27 +84,23 @@
  	scanf("%s",userInput );
  	int len=strlen(userInput);
  	len=strtobig_int(userInput, len, &firstNumber);
- 	firstNumber.digits_count=len;
- 	print_big_int(&firstNumber);
- 	printf("\n%d\n",len);
- 	multiply(&firstNumber, 5, &result);
- 	printf("\n\n");
 
- 	print_big_int(&result);
+  for (size_t i = 2; i < 10; i++)
+  {
+    multiply(&firstNumber, i, &result);
+    print_big_int(&firstNumber);
+    printf(" * %ld = ", i);
+    print_big_int(&result);
+    printf("\n");
+    firstNumber=result;
+  }
+
+ 	/*printf("\n\n");
  	divide(&firstNumber, 5, &result);
 
  	print_big_int(&result);
  	printf("\n");
-
- 	print_big_int(&firstNumber);
- 	print_big_int(&result);
-
- 	printf("\n\n");
- 	copy_big_int(&firstNumber, &result);
-
- 	print_big_int(&firstNumber);
- 	print_big_int(&result);
- 	printf("end");
+ 	printf("end");*/
  	return 0;
  }
 
@@ -112,7 +108,7 @@
  {
  	int counter=0;
 	int y=MAX_DIGITS-1;
- 	for (int i = len-1 ; i >= 0&&i<len; i--)
+ 	for (int i = len-1 ; i >= 0; i--)
 	 {
  		if(str[i]>='0'&&str[i]<='9')
 		{
@@ -122,57 +118,51 @@
 			y--;
  		}
  	}
-     return counter;
+  big_int->digits_count=counter;
+  return counter;
  }
 
  void print_big_int(const struct BigInt *big_int)
  {
- for (int i=0; i < big_int->digits_count; i++)
+ for (int i=MAX_DIGITS-big_int->digits_count; i < MAX_DIGITS; i++)
  {
  	printf("%d",big_int->the_int[i] );
  }
- printf("\n");
  }
 
  void multiply(const struct BigInt *big_int, int factor, struct BigInt *big_result)
  {
 	 int overflow=0;
-	 big_result=big_int;
-	 int counter;
-	 for (size_t i = 1; i < 10; i++)
-	 {
-        counter=0;
-	 	for (size_t j =0 ; j < big_result->digits_count; j--)
-		{
-			int digit=big_result->the_int[j-MAX_DIGITS]*i;
-            digit+=overflow;
-            overflow=0;
-			if (digit>=10)
-			{
-				overflow=digit/10;
-				big_result->the_int[j-MAX_DIGITS]=digit%10;
-			}
-			counter++;
-	 	}
-	 	if(overflow>0)
-	 	{
-            big_result->the_int[MAX_DIGITS-counter]+=overflow;
-            counter++;
-	 	}
-
-	 }
+   for (size_t j =MAX_DIGITS-1 ; j >= MAX_DIGITS-big_int->digits_count; j--)
+   {
+     int digit=big_int->the_int[j]*factor;
+     big_result->the_int[j]=digit%10+overflow;
+     overflow=digit/10;
+   }
+   if(overflow>0)
+   {
+     big_result->the_int[MAX_DIGITS-big_int->digits_count-1]=overflow;
+     big_result->digits_count=big_int->digits_count+1;
+   }
+   else
+   {
+      big_result->digits_count=big_int->digits_count;
+   }
  }
 
 
 
- void divide(const struct BigInt *big_int, int divisor, struct BigInt *big_result){
+ void divide(const struct BigInt *big_int, int divisor, struct BigInt *big_result)
+ {
      int overflowNumber=0;
      int temp;
      int counter=0;
      bool alreadyNumberSetted=false;
-     for(int i=0;i<big_int->digits_count;i++){
+     for(int i=0;i<big_int->digits_count;i++)
+     {
          temp=(big_int->the_int[i]+overflowNumber)/divisor;
-         if(temp==0&&alreadyNumberSetted){
+         if(temp==0&&alreadyNumberSetted)
+         {
 
              big_result->the_int[counter]=(big_int->the_int[i]+overflowNumber)/divisor;
              counter++;
