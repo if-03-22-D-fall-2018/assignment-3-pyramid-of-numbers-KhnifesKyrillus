@@ -78,8 +78,8 @@
  {
  	struct BigInt firstNumber;
  	struct BigInt result;
- 	char userInput[80];
- 	printf("Pyramid of numbers\n\n");
+ 	char userInput[MAX_DIGITS];
+    printf("Pyramid of numbers\n\n");
  	printf("Please enter a number: " );
  	scanf("%s",userInput );
  	int len=strlen(userInput);
@@ -92,12 +92,16 @@
 
  	print_big_int(&result);
  	divide(&firstNumber, 5, &result);
+
  	print_big_int(&result);
  	printf("\n");
+
  	print_big_int(&firstNumber);
  	print_big_int(&result);
+
  	printf("\n\n");
  	copy_big_int(&firstNumber, &result);
+
  	print_big_int(&firstNumber);
  	print_big_int(&result);
  	printf("end");
@@ -107,8 +111,8 @@
  int strtobig_int(const char *str, int len, struct BigInt *big_int)
  {
  	int counter=0;
-	int y=MAX_DIGITS;
- 	for (size_t i = len-1 ; i >=0; i--)
+	int y=MAX_DIGITS-1;
+ 	for (int i = len-1 ; i >= 0&&i<len; i--)
 	 {
  		if(str[i]>='0'&&str[i]<='9')
 		{
@@ -121,8 +125,10 @@
      return counter;
  }
 
- void print_big_int(const struct BigInt *big_int){
- for (int i=0; i < big_int->digits_count; i++) {
+ void print_big_int(const struct BigInt *big_int)
+ {
+ for (int i=0; i < big_int->digits_count; i++)
+ {
  	printf("%d",big_int->the_int[i] );
  }
  printf("\n");
@@ -130,27 +136,34 @@
 
  void multiply(const struct BigInt *big_int, int factor, struct BigInt *big_result)
  {
-	 char overflow[MAX_DIGITS];
+	 int overflow=0;
+	 big_result=big_int;
+	 int counter;
 	 for (size_t i = 1; i < 10; i++)
 	 {
-	 	for (size_t j = big_int->digits_count-1 ; j >=0; j--)
+        counter=0;
+	 	for (size_t j =0 ; j < big_result->digits_count; j--)
 		{
-			int digit=big_int->the_int[j]*1;
-			if (digit<=10)
+			int digit=big_result->the_int[j-MAX_DIGITS]*i;
+            digit+=overflow;
+            overflow=0;
+			if (digit>=10)
 			{
-				overflow[j-1]=digit/10+'0';
-				big_result->the_int[j]=digit%10;
+				overflow=digit/10;
+				big_result->the_int[j-MAX_DIGITS]=digit%10;
 			}
+			counter++;
 	 	}
-		for (size_t i = 0; i < MAX_DIGITS; i++)
-		{
-			if (overflow[i]<='9'&&overflow[i]>='0')
-			{
-				big_result->the_int[i]+=overflow[i]-'0';
-			}
-		}
+	 	if(overflow>0)
+	 	{
+            big_result->the_int[MAX_DIGITS-counter]+=overflow;
+            counter++;
+	 	}
+
 	 }
  }
+
+
 
  void divide(const struct BigInt *big_int, int divisor, struct BigInt *big_result){
      int overflowNumber=0;
@@ -174,6 +187,7 @@
      big_result->digits_count=counter;
  }
 
- void copy_big_int(const struct BigInt *from, struct BigInt *to){
+ void copy_big_int(const struct BigInt *from, struct BigInt *to)
+ {
      *to=*from;
  }
