@@ -95,15 +95,10 @@
     firstNumber=result;
   }
 
- 	*printf("\n");
-  for (size_t i =9 ; i >1; i--)
+ 	printf("\n");
+  for (size_t i =9 ; i >1; i++)
   {
-    divide(&firstNumber, i, &result);
-    print_big_int(&firstNumber);
-    printf(" / %ld = ", i);
-    print_big_int(&result);
-    printf("\n");
-    firstNumber=result;
+    divide(&firstNumber, 5, &result);
   }
 
  	/*print_big_int(&result);
@@ -143,7 +138,9 @@
 	 int overflow=0;
    for (size_t j =MAX_DIGITS-1 ; j >= MAX_DIGITS-big_int->digits_count; j--)
    {
+     printf("%d\n",overflow );
      int digit=big_int->the_int[j]*factor;
+     digit+=overflow;
      big_result->the_int[j]=digit%10+overflow;
      overflow=digit/10;
    }
@@ -182,7 +179,6 @@
          overflowNumber*=10;
      }
      big_result->digits_count=counter;*/
-
  }
 
  void copy_big_int(const struct BigInt *from, struct BigInt *to)
