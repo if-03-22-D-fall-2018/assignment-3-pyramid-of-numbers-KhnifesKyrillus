@@ -76,34 +76,35 @@
  */
  int main(int argc, char *argv[])
  {
- 	struct BigInt firstNumber;
- 	struct BigInt result;
+ 	struct BigInt big_int;
+ 	struct BigInt big_result;
  	char userInput[MAX_DIGITS];
     printf("Pyramid of numbers\n\n");
  	printf("Please enter a number: " );
  	scanf("%s",userInput );
  	int len=strlen(userInput);
- 	len=strtobig_int(userInput, len, &firstNumber);
+ 	len=strtobig_int(userInput, len, &big_int);
 
   for (size_t i = 2; i < 10; i++)
   {
-    multiply(&firstNumber, i, &result);
-    print_big_int(&firstNumber);
+    multiply(&big_int, i, &big_result);
+    print_big_int(&big_int);
     printf(" * %ld = ", i);
-    print_big_int(&result);
+    print_big_int(&big_result);
     printf("\n");
-    firstNumber=result;
+    copy_big_int(&big_result,&big_int);
   }
 
  	printf("\n");
-  for (size_t i =9 ; i >1; i++)
+  for (size_t i =9 ; i >1; i--)
   {
-    divide(&firstNumber, 5, &result);
+    divide(&big_result, i, &big_result);
+    print_big_int(&big_int);
+    printf(" / %ld = ", i);
+    print_big_int(&big_result);
+    printf("\n");
+    copy_big_int(&big_result,&big_int);
   }
-
- 	/*print_big_int(&result);
- 	printf("\n");
- 	printf("end");*/
  	return 0;
  }
 
@@ -138,10 +139,9 @@
 	 int overflow=0;
    for (size_t j =MAX_DIGITS-1 ; j >= MAX_DIGITS-big_int->digits_count; j--)
    {
-     printf("%d\n",overflow );
      int digit=big_int->the_int[j]*factor;
      digit+=overflow;
-     big_result->the_int[j]=digit%10+overflow;
+     big_result->the_int[j]=digit%10;
      overflow=digit/10;
    }
    if(overflow>0)
@@ -159,26 +159,27 @@
 
  void divide(const struct BigInt *big_int, int divisor, struct BigInt *big_result)
  {
-     /*int overflowNumber=0;
-     int temp;
-     int counter=0;
-     bool alreadyNumberSetted=false;
-     for(int i=0;i<big_int->digits_count;i++)
+   int underflow=0;
+   bool isFirstDigitZero=true;
+   for (size_t j =MAX_DIGITS-big_int->digits_count ; j < MAX_DIGITS; j--)
+   {
+     int digit=big_int->the_int[j]/divisor;
+     digit+=underflow*10;
+     if (!isFirstDigitZero)
      {
-         temp=(big_int->the_int[i]+overflowNumber)/divisor;
-         if(temp==0&&alreadyNumberSetted)
-         {
-             big_result->the_int[counter]=(big_int->the_int[i]+overflowNumber)/divisor;
-             counter++;
-         }else if(temp!=0){
-          alreadyNumberSetted=true;
-          big_result->the_int[counter]=(big_int->the_int[i]+overflowNumber)/divisor;
-          counter++;
-         }
-         overflowNumber=big_int->the_int[i]%divisor;
-         overflowNumber*=10;
+       big_result->the_int[j]=digit/divisor;
      }
-     big_result->digits_count=counter;*/
+     else if(digit>0)
+     {
+       isFirstDigitZero=false;
+       big_result->the_int[j]=digit/divisor;
+     }
+     else
+     {
+       big_result->digits_count=big_int->digits_count-1;
+     }
+     underflow=(digit%10)*10;
+   }
  }
 
  void copy_big_int(const struct BigInt *from, struct BigInt *to)
