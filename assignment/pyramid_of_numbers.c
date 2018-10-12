@@ -140,7 +140,11 @@
    {
      printf("%d\n",overflow );
      int digit=big_int->the_int[j]*factor;
+<<<<<<< HEAD
      digit+=overflow;
+=======
+     digit+=+overflow;
+>>>>>>> b658aa17220ce546a4a3758f297ef3fe835304da
      big_result->the_int[j]=digit%10+overflow;
      overflow=digit/10;
    }
