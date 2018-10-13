@@ -94,7 +94,6 @@
     printf("\n");
     copy_big_int(&big_result,&big_int);
   }
-
  	printf("\n");
   for (size_t i =9 ; i >1; i--)
   {
@@ -151,7 +150,7 @@
    }
    else
    {
-      big_result->digits_count=big_int->digits_count;
+     big_result->digits_count=big_int->digits_count;
    }
  }
 
@@ -163,8 +162,9 @@
    bool isFirstDigitZero=true;
    for (size_t j =MAX_DIGITS-big_int->digits_count ; j < MAX_DIGITS; j--)
    {
-     int digit=big_int->the_int[j]/divisor;
+     int digit=big_int->the_int[j];
      digit+=underflow*10;
+     digit=digit/divisor;
      if (!isFirstDigitZero)
      {
        big_result->the_int[j]=digit/divisor;
@@ -178,7 +178,7 @@
      {
        big_result->digits_count=big_int->digits_count-1;
      }
-     underflow=(digit%10)*10;
+     underflow=(digit%divisor)*10;
    }
  }
 
