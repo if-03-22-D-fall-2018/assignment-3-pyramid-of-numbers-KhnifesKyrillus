@@ -160,10 +160,10 @@
  {
    int underflow=0;
    bool isFirstDigitZero=true;
-   for (size_t j =MAX_DIGITS-big_int->digits_count ; j < MAX_DIGITS; j--)
+   for (size_t j =MAX_DIGITS-big_int->digits_count ; j < MAX_DIGITS; j++)
    {
      int digit=big_int->the_int[j];
-     digit+=underflow*10;
+     digit+=underflow;
      digit=digit/divisor;
      if (!isFirstDigitZero)
      {
