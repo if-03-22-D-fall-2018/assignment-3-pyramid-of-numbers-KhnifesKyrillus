@@ -164,12 +164,12 @@
    {
      int digit=big_int->the_int[j];
      digit+=underflow;
-     digit=digit/divisor;
+     int tempResult=digit/divisor;
      if (!isFirstDigitZero)
      {
        big_result->the_int[j]=digit/divisor;
      }
-     else if(digit>0)
+     else if(tempResult>0)
      {
        isFirstDigitZero=false;
        big_result->the_int[j]=digit/divisor;
